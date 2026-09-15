@@ -1,0 +1,37 @@
+{
+  "$comment": "DELETE /v1.0/subscriptions/{id}, 204 with no body. Read from the Graph v1.0 reference. The action a subscription trigger's `stop` names.",
+  "operation": "subscription_delete",
+  "kind": "subscription_delete",
+  "title": "Outlook subscription removal",
+  "description": "Delete a change-notification subscription. The host's subscription machinery calls this when a trigger is removed.",
+  "summary": "delete a subscription",
+  "docs": "https://learn.microsoft.com/en-us/graph/api/subscription-delete?view=graph-rest-1.0",
+  "sideEffects": "idempotent",
+
+  "$sideEffectsComment": "Deleting a subscription that is already gone answers 404 rather than deleting anything else. A retry cannot compound.",
+
+  "request": {
+    "method": "DELETE",
+    "path": "/v1.0/subscriptions/{id}"
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "id",
+      "label": "Subscription ID",
+      "required": true,
+      "description": "The id subscription_create answered with.",
+      "send": { "in": "path", "as": "id", "value": "string" }
+    }
+  ],
+
+  "outputShape": [
+    { "path": "mode", "type": "string", "description": "Which estate this ran against. Graph answers 204 with no body, so this is the only thing published." }
+  ],
+
+  "contract": {
+    "sends": ["id"],
+    "reads": []
+  }
+}

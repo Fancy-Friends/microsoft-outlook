@@ -1,0 +1,91 @@
+{
+  "$comment": "POST /v1.0/subscriptions, request and response subscription, 201. Read from the Graph v1.0 reference, checked 2026-09-15. The action a subscription trigger's `create` names: the HOST calls it with its own URL, an absolute expiry it computed, and the connection's clientState, and reads the lease from the response's `expirationDateTime` (ISO 8601 with a seven-digit fraction). Before Graph answers, it POSTs `?validationToken=...` to the notification URL and expects the token back as text/plain within 10 seconds -- the trigger's handshake.",
+  "operation": "subscription_create",
+  "kind": "subscription_create",
+  "title": "Outlook subscription",
+  "description": "Subscribe to change notifications on the connected account's calendar events. The host's subscription machinery calls this; it is not a node most workflows need.",
+  "summary": "subscribe to changes",
+  "docs": "https://learn.microsoft.com/en-us/graph/api/subscription-post-subscriptions?view=graph-rest-1.0",
+  "sideEffects": "unsafe-to-replay",
+
+  "$idempotencyComment": "Graph refuses a duplicate -- \"When a subscription request contains the same values for changeType and resource that an existing subscription contains, the request fails with an HTTP error code 409 Conflict\" -- so a retry cannot open a second subscription on the same resource. But a retry after a TIMEOUT cannot tell whether the first one was created, and a 409 on the retry does not carry its id, so the host must list subscriptions to recover. Honestly unsafe-to-replay.",
+
+  "request": {
+    "method": "POST",
+    "path": "/v1.0/subscriptions",
+    "encoding": "json"
+  },
+
+  "config": [
+    {
+      "type": "select",
+      "key": "changeType",
+      "label": "Changes",
+      "default": "created,updated,deleted",
+      "description": "Which changes raise a notification. Graph accepts a comma-separated combination.",
+      "options": [
+        { "value": "created,updated,deleted", "label": "created, updated and deleted" },
+        { "value": "created", "label": "created only" },
+        { "value": "updated", "label": "updated only" },
+        { "value": "deleted", "label": "deleted only" }
+      ],
+      "send": { "as": "changeType", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "resource",
+      "label": "Resource",
+      "required": true,
+      "default": "me/events",
+      "description": "The Graph resource to watch, without the base URL. `me/events` is the connected account's calendar events.",
+      "send": { "as": "resource", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "notificationUrl",
+      "label": "Notification URL",
+      "required": true,
+      "description": "The HTTPS URL the host mounts for this trigger. Graph validates it with a validationToken challenge before creating the subscription, then POSTs change notifications to it.",
+      "send": { "as": "notificationUrl", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "lifecycleNotificationUrl",
+      "label": "Lifecycle notification URL",
+      "description": "Where Graph sends `reauthorizationRequired`, `subscriptionRemoved` and `missed` events. May be the notification URL itself. Optional, but without it a subscription Graph removed is one nobody hears about.",
+      "send": { "as": "lifecycleNotificationUrl", "value": "string", "omitEmpty": true }
+    },
+    {
+      "type": "text",
+      "key": "expirationDateTime",
+      "label": "Expires at",
+      "required": true,
+      "description": "When the subscription expires, as an ISO 8601 instant in UTC. The host computes now + the trigger's lifetime; Graph caps an event subscription at 10080 minutes (under seven days) and raises anything under 45 minutes to 45.",
+      "send": { "as": "expirationDateTime", "value": "string" },
+      "$comment": "The HOST supplies the absolute instant, so the package stays clockless -- a faker that read the clock could not be reproduced byte for byte across three runtimes."
+    },
+    {
+      "type": "text",
+      "key": "clientState",
+      "label": "Client state",
+      "required": true,
+      "description": "The connection's clientState. The host fills this from the connection -- never type a value here. Graph echoes it inside every notification, and that echo is how a delivery is verified. At most 128 characters.",
+      "send": { "as": "clientState", "value": "string" },
+      "$comment": "A CREDENTIAL sent in the body -- the same shape as Google's channel token, which is what makes `request.fromCredentials` vocabulary rather than a special case. Until it exists the host passes the value as config. Recorded in .ai/plans/vocabulary-deferred.md."
+    }
+  ],
+
+  "outputShape": [
+    { "path": "data.id", "type": "string", "description": "The subscription id. subscription_renew and subscription_delete need it." },
+    { "path": "data.resource", "type": "string", "description": "What is watched." },
+    { "path": "data.changeType", "type": "string", "description": "Which changes raise a notification." },
+    { "path": "data.notificationUrl", "type": "string", "description": "Where notifications go." },
+    { "path": "data.expirationDateTime", "type": "string", "description": "When it expires, ISO 8601 UTC with a seven-digit fraction. The subscription trigger's lease is built from this." },
+    { "path": "mode", "type": "string", "description": "Which estate this ran against: fake, sandbox or live." }
+  ],
+
+  "contract": {
+    "sends": ["changeType", "resource", "notificationUrl", "lifecycleNotificationUrl", "expirationDateTime", "clientState"],
+    "reads": ["id", "resource", "changeType", "notificationUrl", "expirationDateTime"]
+  }
+}

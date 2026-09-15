@@ -1,0 +1,26 @@
+{
+  "$comment": "A subscription as Graph answers a create: the fields that were sent, Graph's id, and expirationDateTime with the SEVEN-digit fraction Graph writes. The expiry is fixed rather than drawn so the lease a host builds from the fake is the same one every time, and it is the instant the core's own tables use.",
+  "operation": "subscription_create",
+
+  "values": {
+    "$comment": "Echoed once each, read from config and drawn only when the config is empty.",
+    "resource": { "$config": "resource", "as": "string", "default": "me/events" },
+    "changeType": { "$config": "changeType", "as": "string", "default": "created,updated,deleted" },
+    "notificationUrl": { "$config": "notificationUrl", "as": "string", "default": "https://host.example.test/hooks/microsoft-outlook" },
+    "clientState": { "$config": "clientState", "as": "string", "fallback": { "$fake": "id", "prefix": "cs" } }
+  },
+
+  "response": {
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity",
+    "id": { "$fake": "uuid" },
+    "resource": { "$ref": "resource" },
+    "applicationId": { "$fake": "uuid" },
+    "changeType": { "$ref": "changeType" },
+    "clientState": { "$ref": "clientState" },
+    "notificationUrl": { "$ref": "notificationUrl" },
+    "expirationDateTime": "2026-09-22T18:23:45.9356913Z",
+    "creatorId": { "$fake": "uuid" },
+    "latestSupportedTlsVersion": "v1_2",
+    "notificationContentType": "application/json"
+  }
+}

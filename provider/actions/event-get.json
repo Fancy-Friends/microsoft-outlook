@@ -1,0 +1,45 @@
+{
+  "$comment": "GET /v1.0/me/events/{id}, response event. Read from the Graph v1.0 reference.",
+  "operation": "event_get",
+  "kind": "event_get",
+  "title": "Outlook calendar event",
+  "description": "Read one event from the connected account's Outlook calendar.",
+  "summary": "read an event",
+  "docs": "https://learn.microsoft.com/en-us/graph/api/event-get?view=graph-rest-1.0",
+  "sideEffects": "none",
+
+  "request": {
+    "method": "GET",
+    "path": "/v1.0/me/events/{id}"
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "id",
+      "label": "Event ID",
+      "required": true,
+      "description": "The event's id, as published by a notification's resourceData.id or by event_list.",
+      "send": { "in": "path", "as": "id", "value": "string" },
+      "$comment": "Graph event ids are long, base64-ish and can contain `=` and `-`. Every emitter URL-encodes a path value, so it cannot change which URL is called."
+    }
+  ],
+
+  "outputShape": [
+    { "path": "data.id", "type": "string", "description": "The event id." },
+    { "path": "data.subject", "type": "string", "description": "The title." },
+    { "path": "data.bodyPreview", "type": "string", "description": "The first lines of the body, as text." },
+    { "path": "data.start.dateTime", "type": "string", "description": "Start, in start.timeZone. Graph writes seven fractional digits." },
+    { "path": "data.end.dateTime", "type": "string", "description": "End, in end.timeZone." },
+    { "path": "data.organizer.emailAddress.address", "type": "string", "description": "Who organises it." },
+    { "path": "data.isCancelled", "type": "boolean", "description": "Whether the event was cancelled." },
+    { "path": "data.webLink", "type": "string", "description": "The event in Outlook on the web." },
+    { "path": "data.lastModifiedDateTime", "type": "string", "description": "ISO 8601 last modification, UTC." },
+    { "path": "mode", "type": "string", "description": "Which estate this ran against: fake, sandbox or live." }
+  ],
+
+  "contract": {
+    "sends": ["id"],
+    "reads": ["id", "subject", "bodyPreview", "start", "end", "organizer", "isCancelled", "webLink", "lastModifiedDateTime"]
+  }
+}

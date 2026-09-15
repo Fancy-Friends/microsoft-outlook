@@ -1,0 +1,28 @@
+{
+  "$comment": "A change-notification batch as Graph POSTs it, one item deep. clientState is a fixed placeholder rather than the connection's real value: the host verifies BEFORE injecting, and a fake that carried a real secret would teach that the field is readable downstream.",
+  "operation": "calendar_changed",
+
+  "values": {
+    "subscriptionId": { "$fake": "uuid" },
+    "eventId": { "$fake": "id", "prefix": "AAMkAGI2" }
+  },
+
+  "response": {
+    "value": [
+      {
+        "subscriptionId": { "$ref": "subscriptionId" },
+        "subscriptionExpirationDateTime": "2026-09-22T18:23:45.9356913Z",
+        "changeType": { "$config": "sample", "as": "string", "default": "updated" },
+        "resource": "Users/ada%40example.test/Events/AAMkAGI2",
+        "tenantId": { "$fake": "uuid" },
+        "clientState": "verified-before-injection",
+        "resourceData": {
+          "@odata.type": "#Microsoft.Graph.Event",
+          "@odata.id": "Users/ada%40example.test/Events/AAMkAGI2",
+          "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ==\"",
+          "id": { "$ref": "eventId" }
+        }
+      }
+    ]
+  }
+}

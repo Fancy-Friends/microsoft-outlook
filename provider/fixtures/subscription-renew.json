@@ -1,0 +1,21 @@
+{
+  "$comment": "A subscription as Graph answers a renew: the same object, with the new expiry. The id is echoed from config so a host wiring renew after create sees the same subscription.",
+  "operation": "subscription_renew",
+
+  "values": {
+    "id": { "$config": "id", "as": "string", "fallback": { "$fake": "uuid" } },
+    "expirationDateTime": { "$config": "expirationDateTime", "as": "string", "default": "2026-09-29T18:23:45.9356913Z" }
+  },
+
+  "response": {
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity",
+    "id": { "$ref": "id" },
+    "resource": "me/events",
+    "applicationId": { "$fake": "uuid" },
+    "changeType": "created,updated,deleted",
+    "notificationUrl": "https://host.example.test/hooks/microsoft-outlook",
+    "expirationDateTime": { "$ref": "expirationDateTime" },
+    "latestSupportedTlsVersion": "v1_2",
+    "notificationContentType": "application/json"
+  }
+}

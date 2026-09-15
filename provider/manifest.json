@@ -1,0 +1,80 @@
+{
+  "$comment": "THE hand-written part. Four packages -- ui, js, php, py -- are generated from this directory and are never edited. Fix this file, then regenerate. Every fact here is read from Microsoft's own pages, checked 2026-09-15: the Graph v1.0 subscription resource and its create/update/delete references, 'Receive change notifications through webhooks', 'Reduce missing change notifications', the identity-platform refresh-token page, and the Microsoft 365 Developer Program FAQ.",
+
+  "connectorApi": 1,
+
+  "service": "microsoft_outlook",
+  "title": "Microsoft Outlook",
+  "domain": "calendar",
+  "docs": "https://learn.microsoft.com/en-us/graph/api/resources/event?view=graph-rest-1.0",
+
+  "auth": "oauth2",
+  "requires": ["accessToken", "refreshToken", "clientId", "clientSecret"],
+  "authorize": {
+    "kind": "bearer",
+    "credential": "accessToken"
+  },
+
+  "oauth": {
+    "flow": "authorization_code",
+    "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+    "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+    "scopes": ["Calendars.Read", "offline_access"],
+    "accessTokenCredential": "accessToken",
+    "refreshTokenCredential": "refreshToken",
+    "$refreshTokenRotates": "Replaced but NOT revoked. Microsoft identity platform: \"Refresh tokens replace themselves with a fresh token upon every use. The Microsoft identity platform doesn't revoke old refresh tokens when used to fetch new access tokens.\" So a retried or concurrent refresh cannot revoke the grant, which is the only thing the flag guards; the host persists whichever token came back last. Default lifetime 90 days.",
+    "refreshTokenRotates": false,
+    "accessTokenTtlSeconds": 3600,
+    "$scopeComment": "Calendars.Read is the least-privileged delegated permission Graph lists for subscribing to `event` and for reading events. offline_access is what makes the token response carry a refresh token at all. Application permissions (Calendars.Read as an app role) reach other users' mailboxes and are deliberately not what this connector asks for.",
+    "$comment": "The package DECLARES the dance and does not perform it. `common` as the tenant accepts work, school and personal accounts; a host that serves one tenant may narrow it. Access tokens last about an hour, so a connection that is not refreshed stops working within the day -- which is why refreshToken is required rather than optional."
+  },
+
+  "sandbox": "separate-account",
+  "$sandboxComment": "CHECKED 2026-09-15 against the Microsoft 365 Developer Program FAQ. A developer sandbox is a separate Microsoft 365 E5 TENANT with 25 users and sample calendar data, on the same graph.microsoft.com host -- so the credential is different and the URL is not. Eligibility is GATED: Visual Studio Professional/Enterprise subscribers, ISV Success Program / Microsoft AI Cloud Partner Program members, or Premier/Unified Support customers; anyone else has no free sandbox. It lasts up to 90 days and renews only on development activity.",
+  "sandboxNote": "Microsoft's test estate is a Microsoft 365 Developer Program sandbox: a separate E5 tenant with its own users, its own calendars and its own OAuth consent, on the SAME host. Eligibility is limited -- Visual Studio Professional or Enterprise subscribers, ISV Success / Microsoft AI Cloud Partner Program members, or Premier/Unified Support customers -- and the tenant expires after 90 days of no development activity. Without one, every call reaches a real mailbox.",
+
+  "baseUrls": {
+    "live": "https://graph.microsoft.com",
+    "sandbox": "https://graph.microsoft.com"
+  },
+
+  "encoding": "json",
+
+  "credentialFields": [
+    {
+      "key": "clientId",
+      "label": "Application (client) ID",
+      "scope": "provider",
+      "secret": false,
+      "help": "From the Microsoft Entra admin center -> App registrations. ONE value for the whole installation, not per connected account."
+    },
+    {
+      "key": "clientSecret",
+      "label": "Client secret",
+      "scope": "provider",
+      "secret": true,
+      "help": "A client secret of the same app registration. One value for the whole installation; Entra expires them, so record the expiry."
+    },
+    {
+      "key": "accessToken",
+      "label": "Access token",
+      "scope": "account",
+      "secret": true,
+      "help": "Per connected Microsoft account, and it expires after about ONE HOUR. The host refreshes it with the refresh token."
+    },
+    {
+      "key": "refreshToken",
+      "label": "Refresh token",
+      "scope": "account",
+      "secret": true,
+      "help": "Per connected Microsoft account; issued only when the consent request includes offline_access. Every refresh answers with a NEW one -- persist it -- while the old one keeps working until it expires."
+    },
+    {
+      "key": "clientState",
+      "label": "Client state",
+      "scope": "account",
+      "secret": true,
+      "help": "A secret the host chooses per connected account and sends as `clientState` on every subscription. Graph echoes it inside every notification, and that echo is the ONLY thing that authenticates a delivery -- Graph does not sign them. At most 128 characters."
+    }
+  ]
+}

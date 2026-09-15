@@ -1,0 +1,72 @@
+{
+  "$comment": "A Graph change notification on a subscribed calendar. Read from 'Receive change notifications through webhooks' and 'Reduce missing change notifications', checked 2026-09-15: Graph POSTs `{value: [...]}` -- a BATCH, possibly for several subscriptions -- where each item carries subscriptionId, subscriptionExpirationDateTime, changeType, resource, tenantId, clientState and resourceData {@odata.type, @odata.id, @odata.etag, id}. The endpoint must answer 2xx within 3 seconds (202 recommended); Graph retries for up to 4 hours and then drops. A lifecycle notification arrives at the lifecycle URL with `lifecycleEvent` instead of resourceData: subscriptionRemoved, missed or reauthorizationRequired.",
+  "operation": "calendar_changed",
+  "kind": "calendar_changed_trigger",
+  "title": "Outlook calendar change",
+  "description": "Start a run when an event is created, updated or deleted on a subscribed Outlook calendar.",
+  "summary": "a calendar change",
+  "icon": "📅",
+  "docs": "https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks?view=graph-rest-1.0",
+
+  "sideEffects": "none",
+  "delivery": "subscription",
+  "subscriptionTtl": 604800,
+  "$subscriptionTtlComment": "10080 minutes -- Graph's maximum for an Outlook event subscription without resource data (\"under seven days\"). With resource data it would be 1440 minutes, which this connector does not ask for.",
+  "setup": "The host calls subscription_create with its own URL for this trigger, an expiry of now plus this lifetime, and the connection's clientState, and must answer Graph's validationToken challenge on that URL as plain text within 10 seconds or the subscription is refused. It stores the returned id and expirationDateTime. 3600 seconds before expiry it calls subscription_renew; a 404 there means the subscription is gone and it re-lists (event_list) and creates again, because notifications during the gap are gone. Every notification is a batch: the host compares each item's clientState with the connection's clientState, answers 202, and then processes the items. A `missed` lifecycle event means re-list; `reauthorizationRequired` means renew; `subscriptionRemoved` means create again and re-list.",
+
+  "subscription": {
+    "create": "subscription_create",
+    "renew": "subscription_renew",
+    "stop": "subscription_delete",
+    "expiresAtFrom": "expirationDateTime",
+    "expiresAtUnit": "rfc3339",
+    "renewBeforeSeconds": 3600
+  },
+
+  "verification": {
+    "scheme": "shared-token",
+    "in": "body",
+    "path": "value[].clientState",
+    "secretCredential": "clientState",
+    "handshake": {
+      "kind": "echo-query",
+      "param": "validationToken",
+      "$comment": "Graph: \"POST https://{notificationUrl}?validationToken={opaqueTokenCreatedByMicrosoftGraph}\" with Content-Type text/plain; the client must respond within 10 seconds with 200, text/plain, and the URL-decoded token. If the endpoint validation fails, Microsoft Graph doesn't create the subscription."
+    },
+    "$comment": "Graph does not sign notifications. Every item of the batch carries the clientState that was sent on subscription_create, and comparing each one with the connection's clientState is the whole of what authenticates a delivery -- Graph: \"If there's a mismatch, don't consider the change notification as valid.\" The `[]` in the path means every item must match; one wrong item refuses the batch."
+  },
+
+  "config": [
+    {
+      "type": "select",
+      "key": "sample",
+      "label": "Sample change (fake mode)",
+      "default": "updated",
+      "description": "Which changeType the faked notification carries.",
+      "options": [
+        { "value": "created", "label": "created" },
+        { "value": "updated", "label": "updated" },
+        { "value": "deleted", "label": "deleted" }
+      ]
+    }
+  ],
+
+  "defaultConfig": { "mode": "auto", "sample": "updated" },
+
+  "outputShape": [
+    { "path": "value", "type": "array", "description": "The notifications in this delivery -- a batch, possibly spanning several subscriptions. Each item is described below." },
+    { "path": "value[].subscriptionId", "type": "string", "description": "Which subscription this item belongs to." },
+    { "path": "value[].subscriptionExpirationDateTime", "type": "string", "description": "When that subscription expires, ISO 8601 UTC -- Graph's hint for when to renew." },
+    { "path": "value[].changeType", "type": "string", "description": "created, updated or deleted." },
+    { "path": "value[].resource", "type": "string", "description": "The changed resource's path, e.g. Users/{id}/Events/{id}." },
+    { "path": "value[].resourceData.id", "type": "string", "description": "The changed event's id. event_get reads the rest." },
+    { "path": "value[].resourceData.@odata.type", "type": "string", "description": "#Microsoft.Graph.Event." },
+    { "path": "value[].tenantId", "type": "string", "description": "The tenant the change happened in." },
+    { "path": "value[].lifecycleEvent", "type": "string", "description": "Only on a LIFECYCLE notification: subscriptionRemoved, missed or reauthorizationRequired. Absent on a change notification." }
+  ],
+
+  "contract": {
+    "sends": [],
+    "reads": []
+  }
+}

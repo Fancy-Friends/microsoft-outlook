@@ -1,0 +1,29 @@
+{
+  "$comment": "A Graph event, reproduced rather than flattened -- an author who wires {{ $json.data.start.dateTime }} against the fake must find the same path when a real event arrives. Shape from the Graph v1.0 event resource; the seven-digit fractions are how Graph writes instants.",
+  "operation": "event_get",
+
+  "values": {
+    "id": { "$config": "id", "as": "string", "fallback": { "$fake": "id", "prefix": "AAMkAGI2" } }
+  },
+
+  "response": {
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('ada%40example.test')/events/$entity",
+    "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ==\"",
+    "id": { "$ref": "id" },
+    "createdDateTime": "2026-09-01T09:00:00.0000000Z",
+    "lastModifiedDateTime": "2026-09-10T15:30:00.0000000Z",
+    "subject": "Design review",
+    "bodyPreview": "Quarterly design review with the platform team.",
+    "isCancelled": false,
+    "isAllDay": false,
+    "showAs": "busy",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkAGI2&exvsurl=1&path=/calendar/item",
+    "start": { "dateTime": "2026-09-22T14:00:00.0000000", "timeZone": "UTC" },
+    "end": { "dateTime": "2026-09-22T15:00:00.0000000", "timeZone": "UTC" },
+    "location": { "displayName": "Room 4" },
+    "organizer": { "emailAddress": { "name": "Ada Example", "address": "ada@example.test" } },
+    "attendees": [
+      { "type": "required", "status": { "response": "accepted", "time": "2026-09-02T10:00:00.0000000Z" }, "emailAddress": { "name": "Grace Example", "address": "grace@example.test" } }
+    ]
+  }
+}

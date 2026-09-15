@@ -1,0 +1,25 @@
+{
+  "$comment": "A Graph collection: @odata.context, value[], and no @odata.nextLink because this is the only page. One event inside it shaped exactly like event_get's.",
+  "operation": "event_list",
+
+  "response": {
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('ada%40example.test')/events",
+    "value": [
+      {
+        "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ==\"",
+        "id": { "$fake": "id", "prefix": "AAMkAGI2" },
+        "createdDateTime": "2026-09-01T09:00:00.0000000Z",
+        "lastModifiedDateTime": "2026-09-10T15:30:00.0000000Z",
+        "subject": "Design review",
+        "bodyPreview": "Quarterly design review with the platform team.",
+        "isCancelled": false,
+        "isAllDay": false,
+        "showAs": "busy",
+        "webLink": "https://outlook.office365.com/owa/?itemid=AAMkAGI2&exvsurl=1&path=/calendar/item",
+        "start": { "dateTime": "2026-09-22T14:00:00.0000000", "timeZone": "UTC" },
+        "end": { "dateTime": "2026-09-22T15:00:00.0000000", "timeZone": "UTC" },
+        "organizer": { "emailAddress": { "name": "Ada Example", "address": "ada@example.test" } }
+      }
+    ]
+  }
+}
