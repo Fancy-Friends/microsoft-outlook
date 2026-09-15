@@ -55,7 +55,7 @@
     "packages/php/src/MicrosoftOutlook.php": "8b70a2633e61cbe68154b837b259aab5df12801acebb0815991cae8dca9e83cf",
     "packages/php/src/MicrosoftOutlookFaker.php": "405c676d0f833daa6af9a95cc57d7a54f729a0cc66092bb230718c062c3515f8",
     "packages/php/src/Triggers/CalendarChanged.php": "26517aa93e6330833207330a520b18aed4eb3cd141bbee2f7836ee62891dc5ab",
-    "packages/php/tests/FakerTest.php": "cacb4676d393d01c12f3035830f687d0dba0cf9da28d700c8c1d5ab54b2c6c7c",
+    "packages/php/tests/FakerTest.php": "005bd0f8f3d5a18b9f3df1c016f8c38fe4be5c02f38162bfb73178650b0a6fb0",
     "packages/py/CHANGELOG.md": "9214e7d094da862fd8075ed4d8f2603012a625c80cbf8fc75eb821a2d8e9fffd",
     "packages/py/LICENSE": "9c194b64f52c76e677eb84a3e30f369c82727ea58abe50670d5de3f9ccd23270",
     "packages/py/README.md": "41337abb4d2c022f4a7351a05954b3a8881d74aa7250ad99977ab0801483fde6",
