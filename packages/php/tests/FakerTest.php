@@ -30,6 +30,12 @@ it('event_get fakes the shape Microsoft Outlook publishes', function () {
 
     $faked = MicrosoftOutlookFaker::respond('event_get', ['config' => $config, 'fake' => $fake]);
 
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
     expect($faked)->toBe([
         '@odata.context' => 'https://graph.microsoft.com/v1.0/$metadata#users(\'ada%40example.test\')/events/$entity',
         '@odata.etag' => 'W/"ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ=="',
@@ -81,6 +87,12 @@ it('event_list fakes the shape Microsoft Outlook publishes', function () {
 
     $faked = MicrosoftOutlookFaker::respond('event_list', ['config' => $config, 'fake' => $fake]);
 
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
     expect($faked)->toBe([
         '@odata.context' => 'https://graph.microsoft.com/v1.0/$metadata#users(\'ada%40example.test\')/events',
         'value' => [
@@ -120,6 +132,12 @@ it('subscription_create fakes the shape Microsoft Outlook publishes', function (
 
     $faked = MicrosoftOutlookFaker::respond('subscription_create', ['config' => $config, 'fake' => $fake]);
 
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
     expect($faked)->toBe([
         '@odata.context' => 'https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity',
         'id' => '4743be5e-2184-10d8-1aa8-c17076db3ac5',
@@ -141,6 +159,12 @@ it('subscription_delete fakes the shape Microsoft Outlook publishes', function (
 
     $faked = MicrosoftOutlookFaker::respond('subscription_delete', ['config' => $config, 'fake' => $fake]);
 
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
     expect($faked)->toBe([]);
 });
 
@@ -149,6 +173,12 @@ it('subscription_renew fakes the shape Microsoft Outlook publishes', function ()
     $fake = new FakeValues(FakeValues::seedForCall('microsoft_outlook', 'subscription_renew', $config));
 
     $faked = MicrosoftOutlookFaker::respond('subscription_renew', ['config' => $config, 'fake' => $fake]);
+
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
 
     expect($faked)->toBe([
         '@odata.context' => 'https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity',
@@ -170,6 +200,12 @@ it('calendar_changed fakes the shape Microsoft Outlook publishes', function () {
     $fake = new FakeValues(FakeValues::seedForCall('microsoft_outlook', 'calendar_changed', $config));
 
     $faked = MicrosoftOutlookFaker::respond('calendar_changed', ['config' => $config, 'fake' => $fake]);
+
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
 
     expect($faked)->toBe([
         'value' => [
