@@ -70,7 +70,7 @@
     "packages/py/src/fancy_microsoft_outlook/actions/subscription_create.py": "0360fc75da7c526d72f513fda10c7971fee0089876c35c24c43ea86253b4483c",
     "packages/py/src/fancy_microsoft_outlook/actions/subscription_delete.py": "94c095aa904e0c9af4e74dab86155cf5ec86c5e9ddb36d3798cc66b621a717da",
     "packages/py/src/fancy_microsoft_outlook/actions/subscription_renew.py": "cf0bd852f385de8ff16fd87b8c78b4295f140c2df2a9ab6e2638d7a97cb5d44f",
-    "packages/py/src/fancy_microsoft_outlook/faker.py": "b3cc79867fad09ade49b1f54ec7b723a950d7bc90585d9f3ac83b54501e3a929",
+    "packages/py/src/fancy_microsoft_outlook/faker.py": "be96517c805d18c94cbef768192820830867b9993b164cfcc13b0ffa43e1f801",
     "packages/py/src/fancy_microsoft_outlook/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "packages/py/src/fancy_microsoft_outlook/service.py": "d4e11c314ac4150135c0525a770dfa186365614c8752b46f1061cf9ae75b2d8e",
     "packages/py/src/fancy_microsoft_outlook/triggers/__init__.py": "8be3580d4baca25a79fd66eae7886e87dddc499140c0d527d7497c3a17fb7e34",
