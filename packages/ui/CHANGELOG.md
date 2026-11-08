@@ -8,6 +8,28 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.2.0] — 2026-11-08
+
+### Added
+
+- **Laravel integration, in this package** (`src/Laravel/`), auto-discovered
+  through composer's `extra.laravel`. Laravel is SUGGESTED, never required:
+  outside a Laravel app none of it loads.
+  - a service provider that merges `config/microsoft-outlook.php` under
+    `connectors.microsoft-outlook` (credentials from the environment, or per call for a
+    multi-account app);
+  - the `MicrosoftOutlook` facade: `MicrosoftOutlook::call('<operation>', [...])` runs any action;
+  - `MicrosoftOutlook::fake()`, answered from the connector's faker, with
+    `assertSent` / `assertNotSent` / `assertNothingSent` / `assertSentCount`;
+  - a webhook ROUTE per trigger (`Route::microsoftOutlookCalendarChanged('/path')`) that VERIFIES the raw delivery with the trigger's own scheme before the app sees it, answers 401 with the reason when it does not, then dispatches an event (`Events\\…Received`);
+  - its own Pest test of all of it against a booted Laravel app.
+
+### Changed
+
+- **Tests: Pest `^5`**, and `laravel/framework` `^13` as a DEV-ONLY test
+  dependency (the framework this package integrates with; nothing ships in
+  `require`).
+
 ## [0.1.0] — 2026-09-15
 
 ### Added
