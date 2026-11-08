@@ -8,6 +8,23 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.2.1] — 2026-11-08
+
+### Fixed
+
+- **The Laravel config's environment variable names now split camelCase**,
+  as documented. **Consumer action: none.** The old unsplit names are still
+  read as a fallback, so an app that set them keeps working; the new names
+  are preferred.
+
+  | Preferred | Still read |
+  |---|---|
+  | `MICROSOFT_OUTLOOK_CLIENT_ID` | `MICROSOFT_OUTLOOK_CLIENTID` |
+  | `MICROSOFT_OUTLOOK_CLIENT_SECRET` | `MICROSOFT_OUTLOOK_CLIENTSECRET` |
+  | `MICROSOFT_OUTLOOK_ACCESS_TOKEN` | `MICROSOFT_OUTLOOK_ACCESSTOKEN` |
+  | `MICROSOFT_OUTLOOK_REFRESH_TOKEN` | `MICROSOFT_OUTLOOK_REFRESHTOKEN` |
+  | `MICROSOFT_OUTLOOK_CLIENT_STATE` | `MICROSOFT_OUTLOOK_CLIENTSTATE` |
+
 ## [0.2.0] — 2026-11-08
 
 ### Added

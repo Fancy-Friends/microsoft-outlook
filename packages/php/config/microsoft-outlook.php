@@ -20,14 +20,14 @@ return [
 
     'credentials' => [
         // Application (client) ID (one per installation).
-        'clientId' => env('MICROSOFT_OUTLOOK_CLIENTID'),
+        'clientId' => env('MICROSOFT_OUTLOOK_CLIENT_ID', env('MICROSOFT_OUTLOOK_CLIENTID')),
         // Client secret (one per installation, secret).
-        'clientSecret' => env('MICROSOFT_OUTLOOK_CLIENTSECRET'),
+        'clientSecret' => env('MICROSOFT_OUTLOOK_CLIENT_SECRET', env('MICROSOFT_OUTLOOK_CLIENTSECRET')),
         // Access token (per connected account, secret).
-        'accessToken' => env('MICROSOFT_OUTLOOK_ACCESSTOKEN'),
+        'accessToken' => env('MICROSOFT_OUTLOOK_ACCESS_TOKEN', env('MICROSOFT_OUTLOOK_ACCESSTOKEN')),
         // Refresh token (per connected account, secret).
-        'refreshToken' => env('MICROSOFT_OUTLOOK_REFRESHTOKEN'),
+        'refreshToken' => env('MICROSOFT_OUTLOOK_REFRESH_TOKEN', env('MICROSOFT_OUTLOOK_REFRESHTOKEN')),
         // Client state (per connected account, secret).
-        'clientState' => env('MICROSOFT_OUTLOOK_CLIENTSTATE'),
+        'clientState' => env('MICROSOFT_OUTLOOK_CLIENT_STATE', env('MICROSOFT_OUTLOOK_CLIENTSTATE')),
     ],
 ];
